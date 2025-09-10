@@ -35,7 +35,7 @@ const ViewTimetable = () => {
           event.title.toLowerCase().includes(selectedFaculty.toLowerCase())
         );
       }
-
+      
       if (selectedProgram !== "all") {
         filtered = filtered.filter((event: any) => event.programId === selectedProgram);
       }

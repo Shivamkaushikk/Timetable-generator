@@ -2,14 +2,16 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useState, createContext, useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useState, createContext, useContext, ReactNode } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import UploadData from "./pages/UploadData";
 import GenerateTimetable from "./pages/GenerateTimetable";
 import ViewTimetable from "./pages/ViewTimetable";
 import MainLayout from "./components/layout/MainLayout";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,14 @@ const AuthContext = createContext<{
 
 export const useAuth = () => useContext(AuthContext);
 
+const RequireAuth = ({ children }: { children: ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+};
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -40,23 +50,28 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={
-                isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
-              } />
-              <Route path="/dashboard" element={
-                isAuthenticated ? <MainLayout><Dashboard /></MainLayout> : <Navigate to="/login" replace />
-              } />
-              <Route path="/upload" element={
-                isAuthenticated ? <MainLayout><UploadData /></MainLayout> : <Navigate to="/login" replace />
-              } />
-              <Route path="/generate" element={
-                isAuthenticated ? <MainLayout><GenerateTimetable /></MainLayout> : <Navigate to="/login" replace />
-              } />
-              <Route path="/timetable" element={
-                isAuthenticated ? <MainLayout><ViewTimetable /></MainLayout> : <Navigate to="/login" replace />
-              } />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              {/* Public routes */}
+              <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Index />} />
+              <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+
+              {/* Protected routes under main layout */}
+              <Route
+                element={
+                  <RequireAuth>
+                    <MainLayout>
+                      <Outlet />
+                    </MainLayout>
+                  </RequireAuth>
+                }
+              >
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/upload" element={<UploadData />} />
+                <Route path="/generate" element={<GenerateTimetable />} />
+                <Route path="/timetable" element={<ViewTimetable />} />
+              </Route>
+
+              {/* 404 */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
         </TooltipProvider>
