@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
@@ -11,6 +11,20 @@ interface MainLayoutProps {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true);
+      }
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background flex w-full">
@@ -32,10 +46,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         className={`
           fixed lg:static inset-y-0 left-0 z-50 w-64 bg-card border-r border-border
           transform transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          ${isDesktop ? 'lg:translate-x-0' : sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
         initial={false}
-        animate={{ x: sidebarOpen ? 0 : -256 }}
+        animate={{ x: isDesktop ? 0 : sidebarOpen ? 0 : -256 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         <Sidebar onClose={() => setSidebarOpen(false)} />
