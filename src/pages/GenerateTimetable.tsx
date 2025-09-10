@@ -4,79 +4,74 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings, CheckCircle, Loader2, Zap } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { generateSemesterWiseTimetable, type ProgramSemesterInput, type GeneratedTimetable } from "@/lib/scheduler";
 
 const GenerateTimetable = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
+  const [stats, setStats] = useState<{ totalClasses: number; facultyUtilization: number; roomUtilization: number; conflicts: number } | null>(null);
 
   const handleGenerate = async () => {
     setIsGenerating(true);
     setIsGenerated(false);
 
-    // Simulate timetable generation
     setTimeout(() => {
+      // Example multi-program, semester-wise input (could be built from uploaded data in future)
+      const input: ProgramSemesterInput[] = [
+        {
+          programId: "BTECH-CSE",
+          programName: "B.Tech CSE",
+          semesters: [
+            {
+              semesterId: "SEM-1",
+              semesterName: "Semester 1",
+              courses: [
+                { courseCode: "MATH101", title: "Calculus", faculty: "Dr. John Smith" },
+                { courseCode: "PHYS201", title: "Physics", faculty: "Prof. Sarah Johnson" },
+              ],
+            },
+            {
+              semesterId: "SEM-3",
+              semesterName: "Semester 3",
+              courses: [
+                { courseCode: "CS201", title: "Data Structures", faculty: "Prof. Michael Davis" },
+                { courseCode: "CS203", title: "Discrete Math", faculty: "Dr. Emily Brown" },
+              ],
+            },
+          ],
+        },
+        {
+          programId: "BSC-CHEM",
+          programName: "B.Sc Chemistry",
+          semesters: [
+            {
+              semesterId: "SEM-5",
+              semesterName: "Semester 5",
+              courses: [
+                { courseCode: "CHEM301", title: "Organic Chemistry", faculty: "Dr. Emily Brown" },
+                { courseCode: "CHEM305", title: "Analytical Chem", faculty: "Dr. John Smith" },
+              ],
+            },
+          ],
+        },
+      ];
+
+      const generated: GeneratedTimetable = generateSemesterWiseTimetable(input, {
+        meetingDurationMinutes: 90,
+        meetingsPerCourse: 2,
+      });
+
+      localStorage.setItem('generatedTimetable', JSON.stringify(generated));
+      setStats(generated.stats);
+
       setIsGenerating(false);
       setIsGenerated(true);
-      
-      // Store dummy timetable data in localStorage (simulating global state)
-      const dummyTimetable = {
-        events: [
-          {
-            id: '1',
-            title: 'MATH101 - Dr. John Smith',
-            start: '2024-01-15T09:00:00',
-            end: '2024-01-15T10:30:00',
-            backgroundColor: '#3B82F6',
-            room: 'Room A-101'
-          },
-          {
-            id: '2',
-            title: 'PHYS201 - Prof. Sarah Johnson',
-            start: '2024-01-15T11:00:00',
-            end: '2024-01-15T12:30:00',
-            backgroundColor: '#10B981',
-            room: 'Lab B-201'
-          },
-          {
-            id: '3',
-            title: 'CHEM301 - Dr. Emily Brown',
-            start: '2024-01-16T09:00:00',
-            end: '2024-01-16T10:30:00',
-            backgroundColor: '#8B5CF6',
-            room: 'Chemistry Lab C-301'
-          },
-          {
-            id: '4',
-            title: 'CS401 - Prof. Michael Davis',
-            start: '2024-01-16T14:00:00',
-            end: '2024-01-16T15:30:00',
-            backgroundColor: '#F59E0B',
-            room: 'Computer Lab D-401'
-          },
-          {
-            id: '5',
-            title: 'MATH101 - Dr. John Smith',
-            start: '2024-01-17T10:00:00',
-            end: '2024-01-17T11:30:00',
-            backgroundColor: '#3B82F6',
-            room: 'Room A-101'
-          }
-        ],
-        stats: {
-          totalClasses: 45,
-          facultyUtilization: 85,
-          roomUtilization: 78,
-          conflicts: 0
-        }
-      };
-      
-      localStorage.setItem('generatedTimetable', JSON.stringify(dummyTimetable));
-      
+
       toast({
         title: "Timetable Generated Successfully!",
-        description: "Your optimized timetable is ready to view.",
+        description: "Your optimized semester-wise timetable for multiple programs is ready.",
       });
-    }, 2000);
+    }, 800);
   };
 
   return (
@@ -260,19 +255,19 @@ const GenerateTimetable = () => {
                   className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6"
                 >
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-primary">45</div>
+                    <div className="text-2xl font-bold text-primary">{stats?.totalClasses ?? 0}</div>
                     <div className="text-sm text-muted-foreground">Total Classes</div>
                   </div>
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-success">85%</div>
+                    <div className="text-2xl font-bold text-success">{stats?.facultyUtilization ?? 0}%</div>
                     <div className="text-sm text-muted-foreground">Faculty Utilization</div>
                   </div>
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-warning">78%</div>
+                    <div className="text-2xl font-bold text-warning">{stats?.roomUtilization ?? 0}%</div>
                     <div className="text-sm text-muted-foreground">Room Utilization</div>
                   </div>
                   <div className="text-center p-4 bg-muted rounded-lg">
-                    <div className="text-2xl font-bold text-success">0</div>
+                    <div className="text-2xl font-bold text-success">{stats?.conflicts ?? 0}</div>
                     <div className="text-sm text-muted-foreground">Conflicts</div>
                   </div>
                 </motion.div>

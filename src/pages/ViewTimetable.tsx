@@ -12,7 +12,8 @@ import { toast } from "@/hooks/use-toast";
 const ViewTimetable = () => {
   const [timetableData, setTimetableData] = useState<any>(null);
   const [selectedFaculty, setSelectedFaculty] = useState<string>("all");
-  const [selectedBatch, setSelectedBatch] = useState<string>("all");
+  const [selectedProgram, setSelectedProgram] = useState<string>("all");
+  const [selectedSemester, setSelectedSemester] = useState<string>("all");
   const [filteredEvents, setFilteredEvents] = useState<any[]>([]);
 
   useEffect(() => {
@@ -34,22 +35,30 @@ const ViewTimetable = () => {
           event.title.toLowerCase().includes(selectedFaculty.toLowerCase())
         );
       }
-      
-      if (selectedBatch !== "all") {
-        // In a real app, this would filter by actual batch data
-        filtered = filtered.filter((event: any) => 
-          event.title.includes(selectedBatch)
-        );
+
+      if (selectedProgram !== "all") {
+        filtered = filtered.filter((event: any) => event.programId === selectedProgram);
+      }
+
+      if (selectedSemester !== "all") {
+        filtered = filtered.filter((event: any) => event.semesterId === selectedSemester);
       }
       
       setFilteredEvents(filtered);
     }
-  }, [selectedFaculty, selectedBatch, timetableData]);
+  }, [selectedFaculty, selectedProgram, selectedSemester, timetableData]);
+
+  const allPrograms: Array<{ id: string; name: string }> = Array.from(
+    new Map((timetableData?.events ?? []).map((e: any) => [e.programId, e.programName])).entries()
+  ).map(([id, name]) => ({ id, name }));
+
+  const allSemesters: Array<{ id: string; name: string }> = Array.from(
+    new Map((timetableData?.events ?? []).map((e: any) => [e.semesterId, e.semesterName])).entries()
+  ).map(([id, name]) => ({ id, name }));
 
   const handleExportPDF = () => {
-    // Simulate PDF export
     const link = document.createElement('a');
-    link.href = '/sample-timetable.pdf'; // This would be a real PDF in production
+    link.href = '/sample-timetable.pdf';
     link.download = 'timetable.pdf';
     link.click();
     
@@ -60,9 +69,8 @@ const ViewTimetable = () => {
   };
 
   const handleExportExcel = () => {
-    // Simulate Excel export
     const link = document.createElement('a');
-    link.href = '/sample-timetable.xlsx'; // This would be a real Excel file in production
+    link.href = '/sample-timetable.xlsx';
     link.download = 'timetable.xlsx';
     link.click();
     
@@ -148,15 +156,27 @@ const ViewTimetable = () => {
             </Select>
           </div>
 
-          <Select value={selectedBatch} onValueChange={setSelectedBatch}>
+          <Select value={selectedProgram} onValueChange={setSelectedProgram}>
             <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by Student Batch" />
+              <SelectValue placeholder="Filter by Program" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Batches</SelectItem>
-              <SelectItem value="2024">Batch 2024</SelectItem>
-              <SelectItem value="2023">Batch 2023</SelectItem>
-              <SelectItem value="2022">Batch 2022</SelectItem>
+              <SelectItem value="all">All Programs</SelectItem>
+              {allPrograms.map(p => (
+                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filter by Semester" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Semesters</SelectItem>
+              {allSemesters.map(s => (
+                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -243,7 +263,6 @@ const ViewTimetable = () => {
                 slotMaxTime="18:00:00"
                 allDaySlot={false}
                 eventDidMount={(info) => {
-                  // Add room information to event display
                   const roomInfo = info.event.extendedProps.room;
                   if (roomInfo) {
                     info.el.setAttribute('title', `${info.event.title}\nRoom: ${roomInfo}`);
