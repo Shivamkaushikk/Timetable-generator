@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
-import { useState, createContext, useContext, ReactNode } from "react";
+import { useState, createContext, useContext, ReactNode, useEffect } from "react";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import UploadData from "./pages/UploadData";
@@ -37,7 +37,25 @@ const RequireAuth = ({ children }: { children: ReactNode }) => {
 };
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("auth") === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      if (isAuthenticated) {
+        localStorage.setItem("auth", "1");
+      } else {
+        localStorage.removeItem("auth");
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [isAuthenticated]);
 
   const login = () => setIsAuthenticated(true);
   const logout = () => setIsAuthenticated(false);
