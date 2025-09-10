@@ -137,59 +137,63 @@ const ViewTimetable = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between"
+        className="space-y-4"
       >
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <Select value={selectedFaculty} onValueChange={setSelectedFaculty}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Filter by Faculty" />
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="flex items-center space-x-2">
+              <Filter className="w-4 h-4 text-muted-foreground" />
+              <Select value={selectedFaculty} onValueChange={setSelectedFaculty}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue placeholder="Filter by Faculty" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Faculty</SelectItem>
+                  <SelectItem value="Dr. John Smith">Dr. John Smith</SelectItem>
+                  <SelectItem value="Prof. Sarah Johnson">Prof. Sarah Johnson</SelectItem>
+                  <SelectItem value="Dr. Emily Brown">Dr. Emily Brown</SelectItem>
+                  <SelectItem value="Prof. Michael Davis">Prof. Michael Davis</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Select value={selectedProgram} onValueChange={setSelectedProgram}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Filter by Program" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Faculty</SelectItem>
-                <SelectItem value="Dr. John Smith">Dr. John Smith</SelectItem>
-                <SelectItem value="Prof. Sarah Johnson">Prof. Sarah Johnson</SelectItem>
-                <SelectItem value="Dr. Emily Brown">Dr. Emily Brown</SelectItem>
-                <SelectItem value="Prof. Michael Davis">Prof. Michael Davis</SelectItem>
+                <SelectItem value="all">All Programs</SelectItem>
+                {allPrograms.map(p => (
+                  <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="Filter by Semester" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Semesters</SelectItem>
+                {allSemesters.map(s => (
+                  <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          <Select value={selectedProgram} onValueChange={setSelectedProgram}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by Program" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Programs</SelectItem>
-              {allPrograms.map(p => (
-                <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select value={selectedSemester} onValueChange={setSelectedSemester}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Filter by Semester" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Semesters</SelectItem>
-              {allSemesters.map(s => (
-                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex space-x-2">
-          <Button onClick={handleExportPDF} variant="outline" size="sm">
-            <FileText className="w-4 h-4 mr-2" />
-            Export PDF
-          </Button>
-          <Button onClick={handleExportExcel} variant="outline" size="sm">
-            <Table className="w-4 h-4 mr-2" />
-            Export Excel
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+            <Button onClick={handleExportPDF} variant="outline" size="sm" className="w-full sm:w-auto">
+              <FileText className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Export PDF</span>
+              <span className="sm:hidden">PDF</span>
+            </Button>
+            <Button onClick={handleExportExcel} variant="outline" size="sm" className="w-full sm:w-auto">
+              <Table className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Export Excel</span>
+              <span className="sm:hidden">Excel</span>
+            </Button>
+          </div>
         </div>
       </motion.div>
 
@@ -198,38 +202,38 @@ const ViewTimetable = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-4 gap-4"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
       >
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">
+          <CardContent className="p-3 sm:p-4">
+            <div className="text-lg sm:text-2xl font-bold text-primary">
               {timetableData.stats.totalClasses}
             </div>
-            <p className="text-muted-foreground text-sm">Total Classes</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Total Classes</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-success">
+          <CardContent className="p-3 sm:p-4">
+            <div className="text-lg sm:text-2xl font-bold text-success">
               {timetableData.stats.facultyUtilization}%
             </div>
-            <p className="text-muted-foreground text-sm">Faculty Utilization</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Faculty Utilization</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-warning">
+          <CardContent className="p-3 sm:p-4">
+            <div className="text-lg sm:text-2xl font-bold text-warning">
               {timetableData.stats.roomUtilization}%
             </div>
-            <p className="text-muted-foreground text-sm">Room Utilization</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Room Utilization</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-success">
+          <CardContent className="p-3 sm:p-4">
+            <div className="text-lg sm:text-2xl font-bold text-success">
               {timetableData.stats.conflicts}
             </div>
-            <p className="text-muted-foreground text-sm">Conflicts</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Conflicts</p>
           </CardContent>
         </Card>
       </motion.div>
@@ -248,7 +252,7 @@ const ViewTimetable = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="bg-background rounded-lg p-4">
+            <div className="bg-background rounded-lg p-2 sm:p-4">
               <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin]}
                 initialView="timeGridWeek"
@@ -258,7 +262,7 @@ const ViewTimetable = () => {
                   right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 }}
                 events={filteredEvents}
-                height="600px"
+                height="400px"
                 slotMinTime="08:00:00"
                 slotMaxTime="18:00:00"
                 allDaySlot={false}
@@ -269,6 +273,8 @@ const ViewTimetable = () => {
                   }
                 }}
                 eventClassNames="cursor-pointer hover:opacity-80 transition-opacity"
+                responsive={true}
+                aspectRatio={1.5}
               />
             </div>
           </CardContent>

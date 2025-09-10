@@ -132,16 +132,16 @@ const UploadData = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-foreground mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
           Upload Data
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           Manage faculty, courses, and room information for timetable generation
         </p>
       </motion.div>
@@ -151,27 +151,28 @@ const UploadData = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        <Tabs defaultValue="faculty" className="space-y-6">
+        <Tabs defaultValue="faculty" className="space-y-4 sm:space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="faculty">Faculty</TabsTrigger>
-            <TabsTrigger value="courses">Courses</TabsTrigger>
-            <TabsTrigger value="rooms">Rooms</TabsTrigger>
+            <TabsTrigger value="faculty" className="text-xs sm:text-sm">Faculty</TabsTrigger>
+            <TabsTrigger value="courses" className="text-xs sm:text-sm">Courses</TabsTrigger>
+            <TabsTrigger value="rooms" className="text-xs sm:text-sm">Rooms</TabsTrigger>
           </TabsList>
 
           <TabsContent value="faculty" className="space-y-4">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <CardTitle>Faculty Members</CardTitle>
-                    <CardDescription>Manage faculty information and availability</CardDescription>
+                    <CardTitle className="text-lg sm:text-xl">Faculty Members</CardTitle>
+                    <CardDescription className="text-sm">Manage faculty information and availability</CardDescription>
                   </div>
-                  <div className="flex space-x-2">
-                    <Button onClick={() => simulateCSVUpload("faculty")} variant="outline" size="sm">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button onClick={() => simulateCSVUpload("faculty")} variant="outline" size="sm" className="w-full sm:w-auto">
                       <FileUp className="w-4 h-4 mr-2" />
-                      Upload CSV
+                      <span className="hidden sm:inline">Upload CSV</span>
+                      <span className="sm:hidden">CSV</span>
                     </Button>
-                    <Button onClick={addFaculty} size="sm">
+                    <Button onClick={addFaculty} size="sm" className="w-full sm:w-auto">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Faculty
                     </Button>
@@ -179,53 +180,58 @@ const UploadData = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Subjects</TableHead>
-                      <TableHead>Availability</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {faculty.map((f) => (
-                      <TableRow key={f.id}>
-                        <TableCell>
-                          <Input
-                            value={f.name}
-                            onChange={(e) => updateFaculty(f.id, "name", e.target.value)}
-                            placeholder="Faculty name"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={f.subjects}
-                            onChange={(e) => updateFaculty(f.id, "subjects", e.target.value)}
-                            placeholder="Subjects taught"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input
-                            value={f.availability}
-                            onChange={(e) => updateFaculty(f.id, "availability", e.target.value)}
-                            placeholder="Available hours"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => deleteFaculty(f.id)}
-                            className="text-destructive hover:text-destructive"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </TableCell>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="min-w-[120px]">Name</TableHead>
+                        <TableHead className="min-w-[150px]">Subjects</TableHead>
+                        <TableHead className="min-w-[120px]">Availability</TableHead>
+                        <TableHead className="w-[60px]">Actions</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {faculty.map((f) => (
+                        <TableRow key={f.id}>
+                          <TableCell>
+                            <Input
+                              value={f.name}
+                              onChange={(e) => updateFaculty(f.id, "name", e.target.value)}
+                              placeholder="Faculty name"
+                              className="text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={f.subjects}
+                              onChange={(e) => updateFaculty(f.id, "subjects", e.target.value)}
+                              placeholder="Subjects taught"
+                              className="text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Input
+                              value={f.availability}
+                              onChange={(e) => updateFaculty(f.id, "availability", e.target.value)}
+                              placeholder="Available hours"
+                              className="text-sm"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => deleteFaculty(f.id)}
+                              className="text-destructive hover:text-destructive w-8 h-8 p-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

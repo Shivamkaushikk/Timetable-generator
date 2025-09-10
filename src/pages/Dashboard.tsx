@@ -34,23 +34,23 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-foreground mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
           Welcome to NEP 2020 Timetable Generator
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm sm:text-base text-muted-foreground">
           Streamline your college timetable management with our automated scheduling system
         </p>
       </motion.div>
 
       {/* Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {dashboardCards.map((card, index) => (
           <motion.div
             key={card.title}
@@ -98,24 +98,24 @@ const Dashboard = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
       >
         <Card>
-          <CardContent className="p-6">
-            <div className="text-2xl font-bold text-primary">24</div>
-            <p className="text-muted-foreground">Total Faculty Members</p>
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-xl sm:text-2xl font-bold text-primary">24</div>
+            <p className="text-sm sm:text-base text-muted-foreground">Total Faculty Members</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
-            <div className="text-2xl font-bold text-success">156</div>
-            <p className="text-muted-foreground">Courses Available</p>
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-xl sm:text-2xl font-bold text-success">156</div>
+            <p className="text-sm sm:text-base text-muted-foreground">Courses Available</p>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-6">
-            <div className="text-2xl font-bold text-warning">42</div>
-            <p className="text-muted-foreground">Classrooms</p>
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-xl sm:text-2xl font-bold text-warning">42</div>
+            <p className="text-sm sm:text-base text-muted-foreground">Classrooms</p>
           </CardContent>
         </Card>
       </motion.div>

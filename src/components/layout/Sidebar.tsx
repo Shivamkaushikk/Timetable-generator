@@ -5,9 +5,11 @@ import {
   Upload, 
   Settings, 
   Calendar,
-  GraduationCap 
+  GraduationCap,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const sidebarItems = [
   {
@@ -32,18 +34,17 @@ const sidebarItems = [
   },
 ];
 
-const Sidebar = () => {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+const Sidebar = ({ onClose }: SidebarProps) => {
   const location = useLocation();
 
   return (
-    <motion.div 
-      className="w-64 bg-card border-r border-border h-screen sticky top-0"
-      initial={{ x: -100, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-    >
+    <div className="w-full h-full bg-card border-r border-border flex flex-col">
       {/* Logo */}
-      <div className="p-6 border-b border-border">
+      <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-gradient-hero rounded-lg flex items-center justify-center">
             <GraduationCap className="w-5 h-5 text-white" />
@@ -53,10 +54,19 @@ const Sidebar = () => {
             <p className="text-xs text-muted-foreground">Generator 2024</p>
           </div>
         </div>
+        {/* Mobile close button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="lg:hidden"
+        >
+          <X className="w-4 h-4" />
+        </Button>
       </div>
 
       {/* Navigation */}
-      <nav className="p-4 space-y-2">
+      <nav className="p-4 space-y-2 flex-1">
         {sidebarItems.map((item, index) => {
           const isActive = location.pathname === item.href;
           return (
@@ -68,6 +78,7 @@ const Sidebar = () => {
             >
               <NavLink
                 to={item.href}
+                onClick={onClose}
                 className={cn(
                   "flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
                   isActive
@@ -87,7 +98,7 @@ const Sidebar = () => {
           );
         })}
       </nav>
-    </motion.div>
+    </div>
   );
 };
 

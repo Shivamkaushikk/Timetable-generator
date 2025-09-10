@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowLeft, Home } from "lucide-react";
 import { useAuth } from "@/App";
 import { toast } from "@/hooks/use-toast";
 
@@ -66,6 +66,10 @@ const Login = () => {
       });
       setIsLoading(false);
     }, 1500);
+  };
+
+  const handleBackToHome = () => {
+    navigate("/");
   };
 
   return (
@@ -139,13 +143,32 @@ const Login = () => {
 
       
 
+      {/* Back to Home Button */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="absolute top-4 left-4 z-20"
+      >
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleBackToHome}
+          className="bg-white/90 backdrop-blur-sm border-white/30 hover:bg-white hover:shadow-elegant"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Back to Home</span>
+          <span className="sm:hidden">Home</span>
+        </Button>
+      </motion.div>
+
       {/* Main Login Content */}
       <div className="flex items-center justify-center min-h-screen px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="w-full max-w-md"
+          className="w-full max-w-md sm:max-w-lg"
         >
           <Card className="shadow-glow border-white/30 bg-white/95 backdrop-blur-md overflow-hidden">
             <CardHeader className="text-center space-y-6 pb-8 bg-gradient-to-b from-white/50 to-transparent">
@@ -172,17 +195,17 @@ const Login = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
               >
-                <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                   Welcome Back
                 </CardTitle>
-                <CardDescription className="text-muted-foreground mt-2 text-base">
+                <CardDescription className="text-muted-foreground mt-2 text-sm sm:text-base">
                   Sign in to access your NEP 2020 Timetable Generator
                 </CardDescription>
               </motion.div>
             </CardHeader>
             
-            <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
+            <CardContent className="p-4 sm:p-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {/* Email Field */}
                 <motion.div
                   initial={{ x: -30, opacity: 0 }}
